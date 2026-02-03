@@ -14,19 +14,24 @@ class SystemConfigGeneratedImageDto {
   /// Returns a new [SystemConfigGeneratedImageDto] instance.
   SystemConfigGeneratedImageDto({
     required this.format,
-    required this.progressive,
+    this.progressive = false,
     required this.quality,
     required this.size,
   });
 
+  /// Image format
   ImageFormat format;
 
   bool progressive;
 
+  /// Quality
+  ///
   /// Minimum value: 1
   /// Maximum value: 100
   int quality;
 
+  /// Size
+  ///
   /// Minimum value: 1
   int size;
 
@@ -67,7 +72,7 @@ class SystemConfigGeneratedImageDto {
 
       return SystemConfigGeneratedImageDto(
         format: ImageFormat.fromJson(json[r'format'])!,
-        progressive: mapValueOfType<bool>(json, r'progressive')!,
+        progressive: mapValueOfType<bool>(json, r'progressive') ?? false,
         quality: mapValueOfType<int>(json, r'quality')!,
         size: mapValueOfType<int>(json, r'size')!,
       );
@@ -118,7 +123,6 @@ class SystemConfigGeneratedImageDto {
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
     'format',
-    'progressive',
     'quality',
     'size',
   };

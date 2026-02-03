@@ -196,6 +196,10 @@ export class AssetMediaService extends BaseService {
   async downloadOriginal(auth: AuthDto, id: string, dto: AssetDownloadOriginalDto): Promise<ImmichFileResponse> {
     await this.requireAccess({ auth, permission: Permission.AssetDownload, ids: [id] });
 
+    if (auth.sharedLink) {
+      dto.edited = true;
+    }
+
     const { originalPath, originalFileName, editedPath } = await this.assetRepository.getForOriginal(
       id,
       dto.edited ?? false,
@@ -222,8 +226,16 @@ export class AssetMediaService extends BaseService {
       throw new BadRequestException('May not request original file');
     }
 
+    if (auth.sharedLink) {
+      dto.edited = true;
+    }
+
     const size = (dto.size ?? AssetMediaSize.THUMBNAIL) as unknown as AssetFileType;
-    const { originalPath, originalFileName, path } = await this.assetRepository.getForThumbnail(id, size);
+    const { originalPath, originalFileName, path } = await this.assetRepository.getForThumbnail(
+      id,
+      size,
+      dto.edited ?? false,
+    );
 
     if (size === AssetFileType.FullSize && mimeTypes.isWebSupportedImage(originalPath) && !dto.edited) {
       // use original file for web supported images

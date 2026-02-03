@@ -36,14 +36,14 @@ export type FullsizeImageOptions = {
   format: ImageFormat;
   quality: number;
   enabled: boolean;
-  progressive: boolean;
+  progressive?: boolean;
 };
 
 export type ImageOptions = {
   format: ImageFormat;
   quality: number;
   size: number;
-  progressive: boolean;
+  progressive?: boolean;
 };
 
 export type RawImageInfo = {
@@ -490,7 +490,7 @@ export interface MemoryData {
 export type VersionCheckMetadata = { checkedAt: string; releaseVersion: string };
 export type SystemFlags = { mountChecks: Record<StorageFolder, boolean> };
 export type MaintenanceModeState =
-  | { isMaintenanceMode: true; secret: string; action: SetMaintenanceModeDto }
+  | { isMaintenanceMode: true; secret: string; action?: SetMaintenanceModeDto }
   | { isMaintenanceMode: false };
 export type MemoriesState = {
   /** memories have already been created through this date */

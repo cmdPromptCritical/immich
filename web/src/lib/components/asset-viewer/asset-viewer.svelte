@@ -94,6 +94,7 @@
     slideshowNavigation,
     slideshowState,
     slideshowTransition,
+    slideshowRepeat,
   } = slideshowStore;
   const stackThumbnailSize = 60;
   const stackSelectedThumbnailSize = 65;
@@ -109,6 +110,7 @@
   let stack: StackResponseDto | null = $state(null);
 
   let playOriginalVideo = $state($alwaysLoadOriginalVideo);
+  let slideshowStartAssetId = $state<string>();
 
   const setPlayOriginalVideo = (value: boolean) => {
     playOriginalVideo = value;
@@ -192,9 +194,7 @@
 
   const closeEditor = async () => {
     if (editManager.hasAppliedEdits) {
-      console.log(asset);
       const refreshedAsset = await getAssetInfo({ id: asset.id });
-      console.log(refreshedAsset);
       onAssetChange?.(refreshedAsset);
       assetViewingStore.setAsset(refreshedAsset);
     }
@@ -238,6 +238,10 @@
       if ($slideshowState === SlideshowState.PlaySlideshow) {
         if (hasNext) {
           $restartSlideshowProgress = true;
+        } else if ($slideshowRepeat && slideshowStartAssetId) {
+          // Loop back to starting asset
+          await setAssetId(slideshowStartAssetId);
+          $restartSlideshowProgress = true;
         } else {
           await handleStopSlideshow();
         }
@@ -262,6 +266,7 @@
   };
 
   const handlePlaySlideshow = async () => {
+    slideshowStartAssetId = asset.id;
     try {
       await assetViewerHtmlElement?.requestFullscreen?.();
     } catch (error) {
@@ -581,7 +586,7 @@
     </div>
   {/if}
 
-  {#if stack && withStacked}
+  {#if stack && withStacked && !assetViewerManager.isShowEditor}
     {@const stackedAssets = stack.assets}
     <div id="stack-slideshow" class="absolute bottom-0 w-full col-span-4 col-start-1 pointer-events-none">
       <div class="relative flex flex-row no-wrap overflow-x-auto overflow-y-hidden horizontal-scrollbar">

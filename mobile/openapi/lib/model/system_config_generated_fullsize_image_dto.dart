@@ -15,16 +15,21 @@ class SystemConfigGeneratedFullsizeImageDto {
   SystemConfigGeneratedFullsizeImageDto({
     required this.enabled,
     required this.format,
-    required this.progressive,
+    this.progressive = false,
     required this.quality,
   });
 
+  /// Enabled
   bool enabled;
 
+  /// Image format
   ImageFormat format;
 
+  /// Progressive
   bool progressive;
 
+  /// Quality
+  ///
   /// Minimum value: 1
   /// Maximum value: 100
   int quality;
@@ -67,7 +72,7 @@ class SystemConfigGeneratedFullsizeImageDto {
       return SystemConfigGeneratedFullsizeImageDto(
         enabled: mapValueOfType<bool>(json, r'enabled')!,
         format: ImageFormat.fromJson(json[r'format'])!,
-        progressive: mapValueOfType<bool>(json, r'progressive')!,
+        progressive: mapValueOfType<bool>(json, r'progressive') ?? false,
         quality: mapValueOfType<int>(json, r'quality')!,
       );
     }
@@ -118,7 +123,6 @@ class SystemConfigGeneratedFullsizeImageDto {
   static const requiredKeys = <String>{
     'enabled',
     'format',
-    'progressive',
     'quality',
   };
 }
